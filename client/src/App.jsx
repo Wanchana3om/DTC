@@ -4,6 +4,7 @@ import AuthRouter from './page/AuthRouter';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import './App.css';
+import 'leaflet/dist/leaflet.css'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from './context/authContext';
 import jwtDecode from 'jwt-decode';
