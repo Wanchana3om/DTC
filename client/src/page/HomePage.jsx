@@ -6,25 +6,20 @@ function HomePage() {
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-//   const [isError, setIsError] = useState("false");
-//   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
+
 
 
 const{login} = useAuth()
 
-// const getUser  = () => {
-//     login(username, password)
-// }
-
-// useEffect(() => {
-//     getUser();
-//   }, []);
+const changeTypeInput = ()=> {
+setShowPassword( !showPassword)
+}
 
 
 const handleSubmit = async (event) => {
     event.preventDefault();
-    // setIsError(false);
-    // setIsSubmitted(true);
+ 
     try {
       login( 
       {
@@ -32,9 +27,7 @@ const handleSubmit = async (event) => {
         password,
       });
     } catch (error) {
-        // if (error.response && error.response.status === 401) {
-        //     setIsError(true);
-        //   }
+
     }
   };
 
@@ -53,6 +46,8 @@ const handleSubmit = async (event) => {
         onSubmit={handleSubmit}
         className="w-[30%] flex justify-center items-center">
           <div className="w-[90%] h-[300px] border-[1px] border-solid flex-col text-center border-gray-200 shadow-lg shadow-gray-500 rounded-lg">
+           <div className="w-[80%] mx-auto">
+
             <div className="mx-auto mt-4 bg-orange-700 flex justify-center w-[30px] h-[30px] rounded-full">
               <img className="w-[60%]" src="/icons8-lock.svg" alt="" />
             </div>
@@ -61,31 +56,36 @@ const handleSubmit = async (event) => {
             </div>
             <input
               type="text"
-              className="mt-4 text-sm w-[80%] border-[1px]  shadow-sm shadow-gray-500 rounded-sm py-2 px-3"
+              className="mt-4 text-sm w-full border-[1px]  shadow-sm shadow-gray-500 rounded-sm py-2 px-3"
               placeholder="USERNAME"
               onChange={(e) => setUsername(e.target.value)}
+              style={{ outline: "none" }}
             />
             <div>
 
+            <div className="flex justify-between mt-4 border-[1px]  shadow-sm shadow-gray-500 rounded-sm">
+
             <input
-              type="password"
-              className="mt-4 text-sm w-[80%] border-[1px]  shadow-sm shadow-gray-500 rounded-sm py-2 px-3"
+              type={showPassword ? "text" : "password" }
+              className="text-sm w-[85%]  py-2 px-3"
               placeholder="PASSWORD"
               onChange={(e) => setPassword(e.target.value)}
+              style={{ outline: "none" }}
             />
+            <div className="w-[15%] flex justify-center items-center">
+                <img src="/eye.svg" onClick={changeTypeInput} alt="view" />
             </div>
-            {/* <div
-                  className={`error-message-container h-5 text-red-600 pt-2 ${isError && isSubmitted ? "opacity-100" : "opacity-0"
-                    } pointer-events-none`}
-                >
-                  Invalid username/password
-                </div> */}
+            </div>
+            </div>
+            
             <button 
             type="submit"
-            className="mt-4 bg-[#085ddc] w-[80%] text-white rounded-sm font-semibold py-2 px-3  active:bg-[#085ddc] duration-100 hover:bg-[#0644a1] transition-all">
+            className="mt-4 bg-[#085ddc] w-full text-white rounded-sm font-semibold py-2 px-3  active:bg-[#085ddc] duration-100 hover:bg-[#0644a1] transition-all">
               SUBMIT
             </button>
           </div>
+          </div>
+
         </form>
       </section>
     </>
