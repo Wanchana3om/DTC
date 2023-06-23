@@ -55,7 +55,7 @@ function MapPage() {
 
   const handleOnFlyTo = (value) => {
     if (mapRef.current) {
-      mapRef.current.flyTo(value, 13, {
+      mapRef.current.flyTo(value, 15, {
         duration: 2,
       });
     }
