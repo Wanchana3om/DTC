@@ -1,36 +1,40 @@
 import "../App.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
+import { useAuth } from "../context/authContext";
 
 function HomePage() {
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [isError, setIsError] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const navigate = useNavigate();
+//   const [isError, setIsError] = useState("false");
+//   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = async (event) => {
+
+const{login} = useAuth()
+
+// const getUser  = () => {
+//     login(username, password)
+// }
+
+// useEffect(() => {
+//     getUser();
+//   }, []);
+
+
+const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsError(false);
-    setIsSubmitted(true);
-    
+    // setIsError(false);
+    // setIsSubmitted(true);
     try {
-      const result = await axios.post("http://localhost:9875/login", 
+      login( 
       {
         username,
         password,
       });
-      const token = result.data.token;
-      localStorage.setItem("token", token);
-      navigate("/map");
     } catch (error) {
-        if (error.response && error.response.status === 401) {
-            setIsError(true);
-          }
-      return Promise.reject(error);
+        // if (error.response && error.response.status === 401) {
+        //     setIsError(true);
+        //   }
     }
   };
 
@@ -70,12 +74,12 @@ function HomePage() {
               onChange={(e) => setPassword(e.target.value)}
             />
             </div>
-            <div
+            {/* <div
                   className={`error-message-container h-5 text-red-600 pt-2 ${isError && isSubmitted ? "opacity-100" : "opacity-0"
                     } pointer-events-none`}
                 >
                   Invalid username/password
-                </div>
+                </div> */}
             <button 
             type="submit"
             className="mt-4 bg-[#085ddc] w-[80%] text-white rounded-sm font-semibold py-2 px-3  active:bg-[#085ddc] duration-100 hover:bg-[#0644a1] transition-all">

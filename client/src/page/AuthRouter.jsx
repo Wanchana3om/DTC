@@ -3,7 +3,7 @@ import MapPage from "./MapPage";
 
 function AuthRouter() {
   return (
-    <div className="App">
+    <div className="auth" >
       <Routes>
         <Route path="/map" element={<MapPage />} />
       </Routes>

@@ -4,7 +4,7 @@ import MapPage from "./MapPage";
 
 function UnauthRouter() {
   return (
-    <div className="App">
+    <div>
       <Routes>
         <Route path="/" element={<HomePage />} />
       </Routes>
