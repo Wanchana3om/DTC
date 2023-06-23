@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { useAuth } from "../context/authContext";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import axios from "axios";
 import "../App.css";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 
 function MapPage() {
+  const mapRef = useRef();
   const [points, setPoints] = useState([]);
   const [filteredPoints, setFilteredPoints] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortAscending, setSortAscending] = useState(true);
   const { logout } = useAuth();
   const [originalPoints, setOriginalPoints] = useState([]);
-  const [mapCenter, setMapCenter] = useState([13, 100]);
 
   const sortData = () => {
     let sortedData = [];
@@ -38,8 +38,6 @@ function MapPage() {
     setFilteredPoints(originalPoints);
   };
 
-  console.log(mapCenter);
-
   useEffect(() => {
     const filterPoints = () => {
       if (searchQuery.trim() === "") {
@@ -55,8 +53,12 @@ function MapPage() {
     filterPoints();
   }, [searchQuery, points]);
 
-  const handleZoom = (lat, lon) => {
-    setMapCenter([lat, lon]);
+  const handleOnFlyTo = (value) => {
+    if (mapRef.current) {
+      mapRef.current.flyTo(value, 13, {
+        duration: 2,
+      });
+    }
   };
 
   useEffect(() => {
@@ -88,10 +90,12 @@ function MapPage() {
         <div className="w-[90%] h-[80%] bg-white  flex justify-between items-center rounded-xl shadow-2xl ">
           <div className="w-full h-full grid grid-cols-2  ">
             <div className=" rounded-lg my-8 ml-8 mr-4 ">
-              <MapContainer 
+              <MapContainer
+                ref={mapRef}
                 style={{
-                    height: "100%"}}
-                    center={mapCenter}
+                  height: "100%",
+                }}
+                center={[13, 100]}
                 zoom={5}
                 scrollWheelZoom={true}
               >
@@ -106,6 +110,7 @@ function MapPage() {
                 <h1 className="text-[50px]  font-bold ml-5">
                   TABLE <span className="text-[#3d11aa]">AIRPORT</span>{" "}
                 </h1>
+
                 <div className="mr-5">
                   <label htmlFor="search" className="text-sm text-gray-500">
                     Search
@@ -160,7 +165,7 @@ function MapPage() {
                     </div>
                     <div className="w-[20%] flex justify-center items-center">
                       <button
-                         onClick={() => handleZoom(data.lat, data.lon)}
+                        onClick={() => handleOnFlyTo([data.lat, data.lon])}
                         className=" bg-[#085ddc] w-[60%] text-white rounded-md font-semibold py-2 px-3  active:bg-[#085ddc] duration-100 hover:bg-[#0644a1] transition-all"
                       >
                         ZOOM
