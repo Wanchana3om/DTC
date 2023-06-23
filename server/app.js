@@ -4,6 +4,7 @@ import createAccout from "./api/createAccout.js";
 import login from "./api/login.js";
 import dotenv from "dotenv";
 import getPoints from "./api/getPoints.js";
+import { protect } from "./middleware/protect.js";
 
 async function init() {
     dotenv.config();
@@ -16,7 +17,7 @@ async function init() {
 
   app.use("/", createAccout);
   app.use("/login", login);
-  app.use("/points", getPoints);
+  app.use("/points", protect, getPoints);
   
 
   app.listen(port, () => {
