@@ -8,8 +8,33 @@ function MapPage() {
 const [points,setPoints] = useState([])
 const [filteredPoints, setFilteredPoints] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortAscending, setSortAscending] = useState(false);
   const {logout} = useAuth();
+  const [originalPoints, setOriginalPoints] = useState([]);
 
+  const sortData = () => {
+    let sortedData = [];
+  
+    if (sortAscending) {
+      sortedData = [...filteredPoints].sort((a, b) => {
+        const nameA = a.lm_tname.toLowerCase();
+        const nameB = b.lm_tname.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
+    } else {
+      sortedData = [...originalPoints];
+    }
+  
+    setFilteredPoints(sortedData);
+    setSortAscending(!sortAscending);
+  };
+  
+
+  const resetFilter = () => {
+    setFilteredPoints(originalPoints);
+  };
 
 
   useEffect(() => {
@@ -23,7 +48,7 @@ const [filteredPoints, setFilteredPoints] = useState([]);
         setFilteredPoints(filteredData);
       }
     };
-    
+
     filterPoints();
   }, [searchQuery, points]);
 
@@ -32,14 +57,12 @@ const [filteredPoints, setFilteredPoints] = useState([]);
       try {
           const result = await axios.get("http://localhost:9875/points");
           setPoints(result.data);
+          setOriginalPoints(result.data);
       } catch (error) {
           alert("xxxx");
           return Promise.reject(error);
       }
     };
-    
-    const sortPoints = () => {
-    }
     
 
     console.log(points);
@@ -83,8 +106,8 @@ const [filteredPoints, setFilteredPoints] = useState([]);
                   </div>
                 </div>
                 <div className="w-full h-14 bg-[#04002c] flex">
-                <div className="w-[15%] flex justify-center items-center"><p className="text-white">id</p> </div>
-                <div className="w-[25%] flex justify-center items-center"><p onClick={sortPoints} className="text-white">LM_TNAME</p> </div>
+                <div className="w-[15%] flex justify-center items-center"><p onClick={resetFilter} className="text-white">id</p> </div>
+                <div className="w-[25%] flex justify-center items-center"><p onClick={sortData} className="text-white cursor-pointer">LM_TNAME</p> </div>
                 <div className="w-[20%] flex justify-center items-center"><p className="text-white">LAT</p> </div>
                 <div className="w-[20%] flex justify-center items-center"><p className="text-white">LON</p> </div>
                 <div className="w-[20%] flex justify-center items-center mr-5"><p className="text-white">ACTION</p> </div>
