@@ -126,7 +126,7 @@ function MapPage() {
                   </div>
                 </div>
               </div>
-              <div className="w-full h-14 bg-[#04002c] flex">
+              <div className="w-full py-6 bg-[#04002c] flex">
                 <div className="w-[15%] flex justify-center items-center">
                   <p onClick={resetFilter} className="text-white">
                     id
@@ -150,7 +150,7 @@ function MapPage() {
 
               <div className=" w-full h-[500px] overflow-y-auto scrollbar-w-2 scrollbar-track-gray-100 scrollbar-thumb-gray-300 ">
                 {filteredPoints.map((data, index) => (
-                  <div key={index} className="w-full h-20 flex border-t-[1px] ">
+                  <div key={index} className="w-full py-4 flex border-t-[1px] ">
                     <div className="w-[15%] flex justify-center items-center">
                       <p className="text-gray-500">{data._id}</p>{" "}
                     </div>
@@ -174,7 +174,23 @@ function MapPage() {
                   </div>
                 ))}
               </div>
-              <div className="flex w-full h-14 bg-[#04002c] rounded-br-xl rounded-bl-xlrounded-br-xl rounded-bl-xl "></div>
+              <div className="flex font-[300] text-sm justify-end w-full py-4 text-white items-center gap-6 bg-[#04002c] rounded-br-xl rounded-bl-xlrounded-br-xl rounded-bl-xl ">
+                    <div>
+                        Rows per page: 10
+                    </div>
+                    <div>
+                        1-10 of {points.length}
+                    </div>
+                    <div className="mr-5 flex">
+                        <div>
+                            <img src="/icons8-back-50.png" className="w-[15px] mr-7 cursor-pointer" />
+                        </div>
+                        <div>
+                            <img src="/icons8-forward-50.png" className="w-[15px] cursor-pointer" />
+                        </div>
+                        
+                    </div>
+              </div>
             </div>
           </div>
         </div>
