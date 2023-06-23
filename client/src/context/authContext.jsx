@@ -1,11 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import axios from "axios";
-
+import jwtDecode from "jwt-decode";
 
 const AuthContext = React.createContext();
 
 function AuthProvider(props) {
+    const [state, setState] = useState({
+        loading: true,
+        error: null,
+        user: null,
+      });
     const navigate = useNavigate();
 
 const [user,setUser] = useState(localStorage.getItem("token"))
@@ -31,13 +36,20 @@ const [user,setUser] = useState(localStorage.getItem("token"))
     }
   };
 
+  const isAuthenticated = Boolean(localStorage.getItem("token"));
+  if (isAuthenticated && !state.user) {
+    const token = localStorage.getItem("token");
+    const userDataFromToken = jwtDecode(token);
+    setState({ ...state, user: userDataFromToken, loading: false });
+  }
 
   return (
     <AuthContext.Provider
       value={{
         login,
         logout,
-        user
+        user,
+        isAuthenticated
       }}
     >
       {props.children}
