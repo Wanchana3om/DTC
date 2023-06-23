@@ -8,7 +8,7 @@ function MapPage() {
 const [points,setPoints] = useState([])
 const [filteredPoints, setFilteredPoints] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortAscending, setSortAscending] = useState(false);
+  const [sortAscending, setSortAscending] = useState(true);
   const {logout} = useAuth();
   const [originalPoints, setOriginalPoints] = useState([]);
 
@@ -53,22 +53,20 @@ const [filteredPoints, setFilteredPoints] = useState([]);
   }, [searchQuery, points]);
 
 
-    const getPoints = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-          const result = await axios.get("http://localhost:9875/points");
-          setPoints(result.data);
-          setOriginalPoints(result.data);
+        const result = await axios.get('http://localhost:9875/points');
+        setPoints(result.data);
+        setOriginalPoints(result.data);
       } catch (error) {
-          alert("xxxx");
-          return Promise.reject(error);
+        alert('failed to fetchData');
+        return Promise.reject(error);
       }
     };
-    
 
-    console.log(points);
-     useEffect(() => {
-      getPoints();
-    }, []);
+    fetchData();
+  }, []);
     
   return (
     <>
