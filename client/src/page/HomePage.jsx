@@ -1,6 +1,10 @@
 import "../App.css";
 import { useState } from "react";
 import { useAuth } from "../context/authContext";
+import * as React from 'react';
+
+
+
 
 function HomePage() {
 
@@ -45,6 +49,7 @@ const handleSubmit = async (event) => {
         <form 
         onSubmit={handleSubmit}
         className="w-[30%] flex justify-center items-center">
+            
           <div className="w-[90%] h-[300px] border-[1px] border-solid flex-col text-center border-gray-200 shadow-lg shadow-gray-500 rounded-lg">
            <div className="w-[80%] mx-auto">
 

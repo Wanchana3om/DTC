@@ -6,57 +6,28 @@ import "../App.css";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 
+
+
+// page,
+// per_page,
+// total_pages,
 function MapPage() {
   const mapRef = useRef();
   const [points, setPoints] = useState([]);
-  const [filteredPoints, setFilteredPoints] = useState([]);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(7);
+  const [total, setTotal] = useState(15);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortAscending, setSortAscending] = useState(true);
   const { logout } = useAuth();
-  const [originalPoints, setOriginalPoints] = useState([]);
 
-  const sortData = () => {
-    let sortedData = [];
+    console.log(points);
 
-    if (sortAscending) {
-      sortedData = [...filteredPoints].sort((a, b) => {
-        const nameA = a.lm_tname.toLowerCase();
-        const nameB = b.lm_tname.toLowerCase();
-        if (nameA < nameB) return -1;
-        if (nameA > nameB) return 1;
-        return 0;
-      });
-    } else {
-      sortedData = [...originalPoints];
-    }
 
-    setFilteredPoints(sortedData);
-    setSortAscending(!sortAscending);
-  };
-
-  const resetFilter = () => {
-    setFilteredPoints(originalPoints);
-  };
-
-  useEffect(() => {
-    const filterPoints = () => {
-      if (searchQuery.trim() === "") {
-        setFilteredPoints(points);
-      } else {
-        const filteredData = points.filter((data) =>
-          data.lm_tname.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setFilteredPoints(filteredData);
-      }
-    };
-
-    filterPoints();
-  }, [searchQuery, points]);
 
   const handleOnFlyTo = (value) => {
     if (mapRef.current) {
       mapRef.current.flyTo(value, 15, {
-        duration: 2,
+        duration: 3,
       });
     }
   };
@@ -64,9 +35,10 @@ function MapPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get("http://localhost:9875/points");
-        setPoints(result.data);
-        setOriginalPoints(result.data);
+        
+        const result = await axios.get(`http://localhost:9875/points?page=${page}&per_page=${perPage}`);
+        setPoints(result.data.data);
+        setTotal(result.data.total)
       } catch (error) {
         alert("failed to fetchData");
         return Promise.reject(error);
@@ -74,7 +46,10 @@ function MapPage() {
     };
 
     fetchData();
-  }, []);
+  }, [page,perPage]);
+
+
+ 
 
   return (
     <>
@@ -128,19 +103,21 @@ function MapPage() {
               </div>
               <div className="w-full py-6 bg-[#04002c] flex">
                 <div className="w-[15%] flex justify-center items-center">
-                  <p onClick={resetFilter} className="text-white">
+                  <p className="text-white">
                     id
                   </p>{" "}
                 </div>
                 <div className="w-[25%] flex justify-center items-center">
-                  <p onClick={sortData} className="text-white cursor-pointer">
+                  <p className="text-white cursor-pointer">
                     LM_TNAME
                   </p>{" "}
                 </div>
                 <div className="w-[20%] flex justify-center items-center">
                   <p className="text-white">LAT</p>{" "}
                 </div>
-                <div className="w-[20%] flex justify-center items-center">
+                <div 
+                onClick={()=>setPage(2)}
+                className="w-[20%] flex justify-center items-center">
                   <p className="text-white">LON</p>{" "}
                 </div>
                 <div className="w-[20%] flex justify-center items-center mr-5">
@@ -149,7 +126,7 @@ function MapPage() {
               </div>
 
               <div className=" w-full h-[500px] overflow-y-auto scrollbar-w-2 scrollbar-track-gray-100 scrollbar-thumb-gray-300 ">
-                {filteredPoints.map((data, index) => (
+                {points.map((data, index) => (
                   <div key={index} className="w-full py-4 flex border-t-[1px] ">
                     <div className="w-[15%] flex justify-center items-center">
                       <p className="text-gray-500">{data._id}</p>{" "}
