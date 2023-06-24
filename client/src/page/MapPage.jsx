@@ -38,6 +38,7 @@ function MapPage() {
         `http://localhost:9875/points?page=${page}&per_page=${perPage}`
       );
       setPoints(result.data.data);
+      setPerPage(result.data.per_page);
       setTotal(result.data.total);
     } catch (error) {
       alert("Failed to fetch data");
@@ -54,6 +55,7 @@ function MapPage() {
       );
       setPoints(result.data.data);
       setTotal(result.data.total);
+      setPerPage(result.data.per_page);
     } catch (error) {
       alert("Failed to fetch data");
       return Promise.reject(error);
@@ -66,6 +68,7 @@ function MapPage() {
         `http://localhost:9875/points?page=${page}&per_page=${perPage}&search=${search}`
       );
       setPoints(result.data.data);
+      setPerPage(result.data.per_page);
       setTotal(result.data.total);
     } catch (error) {
       alert("Failed to fetch data");
