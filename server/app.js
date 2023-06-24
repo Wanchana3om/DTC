@@ -7,7 +7,7 @@ import getPoints from "./api/getPoints.js";
 import { protect } from "./middleware/protect.js";
 
 async function init() {
-    dotenv.config();
+  dotenv.config();
   const app = express();
   const port = 9875;
 

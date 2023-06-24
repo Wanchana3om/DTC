@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from './context/authContext';
 import jwtDecode from 'jwt-decode';
 function App() {
-  // const {user} = useAuth();
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -42,7 +41,8 @@ function App() {
   }, [auth, navigate]);
  
   return (
-    auth.isAuthenticated && tokenValid ? <AuthRouter /> : <UnauthRouter />)
+    auth.isAuthenticated && tokenValid ? <AuthRouter /> : <UnauthRouter/>
+    )
  
 }
 

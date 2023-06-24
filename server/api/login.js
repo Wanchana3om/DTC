@@ -32,7 +32,7 @@ login.post("/", async (req, res) => {
         username: storedUsername,
       },
       process.env.SECRET_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "10h" }
     );
 
     return res.json({ token });
