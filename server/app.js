@@ -1,6 +1,6 @@
 import cors from "cors";
 import express from "express";
-import createAccout from "./api/createAccout.js";
+import register from "./api/register.js";
 import login from "./api/login.js";
 import dotenv from "dotenv";
 import getPoints from "./api/getPoints.js";
@@ -15,7 +15,7 @@ async function init() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use("/", createAccout);
+  app.use("/register", register);
   app.use("/login", login);
   app.use("/points", protect, getPoints);
   

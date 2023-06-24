@@ -6,22 +6,19 @@ import jwtDecode from "jwt-decode";
 const AuthContext = React.createContext();
 
 function AuthProvider(props) {
-    const [state, setState] = useState({
-        loading: true,
-        error: null,
-        user: null,
-      });
-    const navigate = useNavigate();
+  const [state, setState] = useState({
+    loading: true,
+    error: null,
+    user: null,
+  });
+  const navigate = useNavigate();
 
-const [user,setUser] = useState(localStorage.getItem("token"))
+  const [user, setUser] = useState(localStorage.getItem("token"));
 
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/");
-    window.location.reload();
   };
-
-  
 
   const login = async (data) => {
     try {
@@ -31,7 +28,16 @@ const [user,setUser] = useState(localStorage.getItem("token"))
       localStorage.setItem("token", token);
       navigate("/map");
     } catch (error) {
-     alert(" Username or Password Incorrect");
+      alert(" Username or Password Incorrect");
+      return Promise.reject(error);
+    }
+  };
+
+  const register = async (data) => {
+    try {
+      const result = await axios.post("http://localhost:9875/register", data);
+       return result;
+    } catch (error) {
       return Promise.reject(error);
     }
   };
@@ -49,7 +55,8 @@ const [user,setUser] = useState(localStorage.getItem("token"))
         login,
         logout,
         user,
-        isAuthenticated
+        register,
+        isAuthenticated,
       }}
     >
       {props.children}

@@ -11,21 +11,24 @@ function MapPage() {
   const [points, setPoints] = useState([]);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
-  const [total, setTotal] = useState(15);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [search, setsearch] = useState("");
   const [sortDirection, setSortDirection] = useState(true);
+  const [limitPage, setLimitPage] = useState(false);
   const { logout } = useAuth();
 
   const handleOnFlyTo = (value) => {
     if (mapRef.current) {
       mapRef.current.flyTo(value, 15, {
-        duration: 3,
+        duration: 5,
       });
     }
   };
+  console.log(totalPages);
 
   const nextPage = () => {
-    setPage(Math.min(page + 1, total));
+    setPage(Math.min(page + 1, totalPages));
   };
 
   const backPage = () => {
@@ -40,6 +43,7 @@ function MapPage() {
       setPoints(result.data.data);
       setPerPage(result.data.per_page);
       setTotal(result.data.total);
+      setTotalPages(result.data.totalPages);
     } catch (error) {
       alert("Failed to fetch data");
       return Promise.reject(error);
@@ -88,9 +92,14 @@ function MapPage() {
     setSortDirection(!sortDirection);
     fetchSort();
   };
+
+  const handleLimitPage = () => {
+    setLimitPage(!limitPage);
+  };
+
   return (
     <>
-      <section className="w-screen h-screen bg-[#020b1f] flex justify-center items-center relative">
+      <section className="w-full h-full py-[115px] bg-[#020b1f] flex justify-center items-center relative">
         <div
           onClick={() => {
             logout();
@@ -101,11 +110,13 @@ function MapPage() {
         </div>
         <div className="w-[90%] h-[80%] bg-white  flex justify-between items-center rounded-xl shadow-2xl ">
           <div className="w-full h-full grid grid-cols-2  ">
-            <div className=" rounded-lg my-8 ml-8 mr-4 ">
+            <div className="shadow-2xl border-[1px] border-gray-300 rounded-[20px] my-8 ml-8 mr-4  ">
               <MapContainer
                 ref={mapRef}
                 style={{
                   height: "100%",
+                  boxShadow: "0 0 20px rgba(0, 0, 0, 0.2)",
+                  borderRadius: "20px"
                 }}
                 center={[13, 100]}
                 zoom={5}
@@ -117,7 +128,8 @@ function MapPage() {
                 />
               </MapContainer>
             </div>
-            <div className=" rounded-lg my-8 mr-8 ml-4 shadow-2xl flex flex-col justify-between ">
+            
+            <div className=" rounded-[20px] my-8 mr-8 ml-4 shadow-2xl shadow-gray-500 flex flex-col justify-between ">
               <div className="flex justify-between mt-2 items-center">
                 <h1 className="text-[50px]  font-bold ml-5">
                   TABLE <span className="text-[#3d11aa]">AIRPORT</span>{" "}
@@ -185,8 +197,47 @@ function MapPage() {
                   </div>
                 ))}
               </div>
-              <div className="flex font-[300] text-sm justify-end w-full py-4 text-white items-center gap-6 bg-[#04002c] rounded-br-xl rounded-bl-xlrounded-br-xl rounded-bl-xl ">
-                <div>Rows per page: {points.length}</div>
+              <div className="flex font-[300] text-sm justify-between w-full py-4 text-white items-center gap-6 bg-[#04002c] rounded-br-[20px] rounded-bl-[20px]">
+                <div className="pl-7">Page: {page}</div>
+                <div className="flex justify-center items-center gap-7">
+
+                <div onClick={handleLimitPage} className="flex relative  cursor-pointer">
+                  {" "}
+                  Rows per page:
+                  <p className="ml-1"> {points.length}</p>
+                  {limitPage ? (
+                    <div className="flex flex-col justify-around items-center border-[1px] border-gray-300 bg-white absolute w-9 bottom-0 right-0 rounded-md">
+                      <div
+                        onClick={() => {
+                          setPerPage(7);
+                          handleLimitPage();
+                        }}
+                        className="w-full text-black  hover:bg-gray-200 cursor-pointer border-b-[1px] flex justify-center rounded-tr-md rounded-tl-md py-1"
+                      >
+                        7
+                      </div>
+                      <div
+                        onClick={() => {
+                          setPerPage(10);
+                          handleLimitPage();
+                        }}
+                        className="w-full text-black hover:bg-gray-200 cursor-pointer border-b-[1px] flex justify-center  py-1"
+                      >
+                        10
+                      </div>
+                      <div
+                        onClick={() => {
+                          setPerPage(15);
+                          handleLimitPage();
+                        }}
+                        className="w-full text-black hover:bg-gray-200 cursor-pointer  flex justify-center rounded-br-md rounded-bl-md  py-1"
+                      >
+                        15
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
                 <div>
                   {points.length} of {total}
                 </div>
@@ -205,6 +256,8 @@ function MapPage() {
                   </div>
                 </div>
               </div>
+              </div>
+
             </div>
           </div>
         </div>

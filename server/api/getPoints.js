@@ -37,12 +37,13 @@ getPoints.get("/", async (req, res) => {
 
     const total = await pool.query("select count (_id) from points");
 
-    const total_pages = Math.ceil(total.rows[0].count / per_page);
+    const totalPages = Math.ceil(total.rows[0].count / per_page);
+  
     return res.json({
       data: data.rows,
       page,
       per_page,
-      total_pages,
+      totalPages,
       total: parseInt(total.rows[0].count),
     });
   } catch (error) {

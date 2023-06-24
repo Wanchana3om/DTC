@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 const login = Router();
 
 login.post("/", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password} = req.body;
 
   try {
     const user = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
@@ -18,6 +18,7 @@ login.post("/", async (req, res) => {
 
     const storedUsername = user.rows[0].username;
     const storedPassword = user.rows[0].password;
+    const storedName = user.rows[0].name;
 
     const isValidPassword = await bcrypt.compare(password, storedPassword);
 
@@ -29,6 +30,7 @@ login.post("/", async (req, res) => {
     const token = jwt.sign(
       {
         id: user.rows[0]._id,
+        name: storedName,
         username: storedUsername,
       },
       process.env.SECRET_KEY,
