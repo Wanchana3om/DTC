@@ -6,23 +6,15 @@ import "../App.css";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer } from "react-leaflet";
 
-
-
-// page,
-// per_page,
-// total_pages,
 function MapPage() {
   const mapRef = useRef();
   const [points, setPoints] = useState([]);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(7);
   const [total, setTotal] = useState(15);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [search, setsearch] = useState("");
+  const [sortDirection, setSortDirection] = useState(true);
   const { logout } = useAuth();
-
-    console.log(points);
-
-
 
   const handleOnFlyTo = (value) => {
     if (mapRef.current) {
@@ -32,25 +24,67 @@ function MapPage() {
     }
   };
 
+  const nextPage = () => {
+    setPage(Math.min(page + 1, total));
+  };
+
+  const backPage = () => {
+    setPage(Math.max(page - 1, 1));
+  };
+
+  const fetchData = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:9875/points?page=${page}&per_page=${perPage}`
+      );
+      setPoints(result.data.data);
+      setTotal(result.data.total);
+    } catch (error) {
+      alert("Failed to fetch data");
+      return Promise.reject(error);
+    }
+  };
+
+  const fetchSort = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:9875/points?page=${page}&per_page=${perPage}&sort_column=lm_tname&sort_direction=${
+          sortDirection ? "asc" : "desc"
+        }`
+      );
+      setPoints(result.data.data);
+      setTotal(result.data.total);
+    } catch (error) {
+      alert("Failed to fetch data");
+      return Promise.reject(error);
+    }
+  };
+
+  const fetchSearh = async () => {
+    try {
+      const result = await axios.get(
+        `http://localhost:9875/points?page=${page}&per_page=${perPage}&search=${search}`
+      );
+      setPoints(result.data.data);
+      setTotal(result.data.total);
+    } catch (error) {
+      alert("Failed to fetch data");
+      return Promise.reject(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        
-        const result = await axios.get(`http://localhost:9875/points?page=${page}&per_page=${perPage}`);
-        setPoints(result.data.data);
-        setTotal(result.data.total)
-      } catch (error) {
-        alert("failed to fetchData");
-        return Promise.reject(error);
-      }
-    };
+    fetchSearh();
+  }, [search]);
 
+  useEffect(() => {
     fetchData();
-  }, [page,perPage]);
+  }, [page, perPage]);
 
-
- 
-
+  const handleSort = () => {
+    setSortDirection(!sortDirection);
+    fetchSort();
+  };
   return (
     <>
       <section className="w-screen h-screen bg-[#020b1f] flex justify-center items-center relative">
@@ -95,29 +129,26 @@ function MapPage() {
                       type="text"
                       className="w-full border-[1px] border-gray-500 rounded-md py-2 px-3"
                       placeholder="Search..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      value={search}
+                      onChange={(e) => setsearch(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
               <div className="w-full py-6 bg-[#04002c] flex">
                 <div className="w-[15%] flex justify-center items-center">
-                  <p className="text-white">
-                    id
-                  </p>{" "}
+                  <p className="text-white">id</p>{" "}
                 </div>
-                <div className="w-[25%] flex justify-center items-center">
-                  <p className="text-white cursor-pointer">
-                    LM_TNAME
-                  </p>{" "}
+                <div
+                  onClick={handleSort}
+                  className="w-[25%] flex justify-center items-center"
+                >
+                  <p className="text-white cursor-pointer">LM_TNAME</p>{" "}
                 </div>
                 <div className="w-[20%] flex justify-center items-center">
                   <p className="text-white">LAT</p>{" "}
                 </div>
-                <div 
-                onClick={()=>setPage(2)}
-                className="w-[20%] flex justify-center items-center">
+                <div className="w-[20%] flex justify-center items-center">
                   <p className="text-white">LON</p>{" "}
                 </div>
                 <div className="w-[20%] flex justify-center items-center mr-5">
@@ -152,21 +183,24 @@ function MapPage() {
                 ))}
               </div>
               <div className="flex font-[300] text-sm justify-end w-full py-4 text-white items-center gap-6 bg-[#04002c] rounded-br-xl rounded-bl-xlrounded-br-xl rounded-bl-xl ">
-                    <div>
-                        Rows per page: 10
-                    </div>
-                    <div>
-                        1-10 of {points.length}
-                    </div>
-                    <div className="mr-5 flex">
-                        <div>
-                            <img src="/icons8-back-50.png" className="w-[15px] mr-7 cursor-pointer" />
-                        </div>
-                        <div>
-                            <img src="/icons8-forward-50.png" className="w-[15px] cursor-pointer" />
-                        </div>
-                        
-                    </div>
+                <div>Rows per page: {points.length}</div>
+                <div>
+                  {points.length} of {total}
+                </div>
+                <div className="mr-5 flex">
+                  <div onClick={backPage}>
+                    <img
+                      src="/icons8-back-50.png"
+                      className="w-[15px] mr-7 cursor-pointer"
+                    />
+                  </div>
+                  <div onClick={nextPage}>
+                    <img
+                      src="/icons8-forward-50.png"
+                      className="w-[15px] cursor-pointer"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
